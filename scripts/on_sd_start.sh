@@ -137,7 +137,8 @@ else
 fi
 
 if [ -f "../models/stable-diffusion/sd-v1-4.ckpt" ]; then
-    model_size=`find "../models/stable-diffusion/sd-v1-4.ckpt" -printf "%s"`
+    #model_size=`find "../models/stable-diffusion/sd-v1-4.ckpt" -printf "%s"`
+    model_size=`wc -c "../models/stable-diffusion/sd-v1-4.ckpt" | cut -f2 -d' '`
 
     if [ "$model_size" -eq "4265380512" ] || [ "$model_size" -eq "7703807346" ] || [ "$model_size" -eq "7703810927" ]; then
         echo "Data files (weights) necessary for Stable Diffusion were already downloaded"
@@ -153,7 +154,8 @@ if [ ! -f "../models/stable-diffusion/sd-v1-4.ckpt" ]; then
     curl -L -k https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt > ../models/stable-diffusion/sd-v1-4.ckpt
 
     if [ -f "../models/stable-diffusion/sd-v1-4.ckpt" ]; then
-        model_size=`find "../models/stable-diffusion/sd-v1-4.ckpt" -printf "%s"`
+        #model_size=`find "../models/stable-diffusion/sd-v1-4.ckpt" -printf "%s"`
+        model_size=`wc -c "../models/stable-diffusion/sd-v1-4.ckpt" | cut -f2 -d' '`
         if [ ! "$model_size" == "4265380512" ]; then
 	    fail "The downloaded model file was invalid! Bytes downloaded: $model_size"
         fi
