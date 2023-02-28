@@ -169,6 +169,8 @@ call WHERE uvicorn > .tmp
     @echo conda_sd_ui_deps_installed >> ..\scripts\install_status.txt
 )
 
+@rem Stable Diffusion 1.4
+
 @if exist "..\models\stable-diffusion\sd-v1-4.ckpt" (
     for %%I in ("..\models\stable-diffusion\sd-v1-4.ckpt") do if "%%~zI" EQU "4265380512" (
         echo "Data files (weights) necessary for Stable Diffusion were already downloaded. Using the HuggingFace 4 GB Model."
@@ -205,6 +207,34 @@ call WHERE uvicorn > .tmp
     )
 )
 
+@rem Stable Diffusion 2.1
+
+@if exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
+    for %%I in ("..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt") do if "%%~zI" EQU "5214865159" (
+        echo "Data files (weights) necessary for Stable Diffusion were already downloaded. Using the HuggingFace 5 GB Model."
+    ) else (
+        del "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt"
+    )
+)
+
+@if not exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
+    @echo. & echo "Downloading data files (weights) for Stable Diffusion.." & echo.
+
+    @call curl -L -k https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt > ..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt
+
+    @if exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
+        for %%I in ("..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt") do if "%%~zI" NEQ "5214865159" (
+            echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
+            echo. & echo "Error downloading the data files (weights) for Stable Diffusion. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+            pause
+            exit /b
+        )
+    ) else (
+        @echo. & echo "Error downloading the data files (weights) for Stable Diffusion. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+        pause
+        exit /b
+    )
+)
 
 
 @if exist "..\models\gfpgan\GFPGANv1.3.pth" (
