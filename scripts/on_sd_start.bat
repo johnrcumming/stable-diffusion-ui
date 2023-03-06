@@ -173,18 +173,10 @@ call WHERE uvicorn > .tmp
 
 @if exist "..\models\stable-diffusion\sd-v1-4.ckpt" (
     for %%I in ("..\models\stable-diffusion\sd-v1-4.ckpt") do if "%%~zI" EQU "4265380512" (
-        echo "Data files (weights) necessary for Stable Diffusion were already downloaded. Using the HuggingFace 4 GB Model."
+        echo "Data files (weights) necessary for Stable Diffusion V1.4 were already downloaded."
     ) else (
-        for %%J in ("..\models\stable-diffusion\sd-v1-4.ckpt") do if "%%~zJ" EQU "7703807346" (
-            echo "Data files (weights) necessary for Stable Diffusion were already downloaded. Using the HuggingFace 7 GB Model."
-        ) else (
-            for %%K in ("..\models\stable-diffusion\sd-v1-4.ckpt") do if "%%~zK" EQU "7703810927" (
-                echo "Data files (weights) necessary for Stable Diffusion were already downloaded. Using the Waifu Model."
-            ) else (
-                echo. & echo "The model file present at models\stable-diffusion\sd-v1-4.ckpt is invalid. It is only %%~zK bytes in size. Re-downloading.." & echo.
-                del "..\models\stable-diffusion\sd-v1-4.ckpt"
-            )
-        )
+        echo. & echo "The model file present at models\stable-diffusion\sd-v1-4.ckpt is invalid. It is only %%~zK bytes in size. Re-downloading.." & echo.
+        del "..\models\stable-diffusion\sd-v1-4.ckpt"
     )
 )
 
@@ -207,36 +199,123 @@ call WHERE uvicorn > .tmp
     )
 )
 
-@rem Stable Diffusion 2.1
+@rem Stable Diffusion 1.5 - NON EMA - PRUNED
 
-@if exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
-    for %%I in ("..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt") do if "%%~zI" EQU "5214865159" (
-        echo "Data files (weights) necessary for Stable Diffusion were already downloaded. Using the HuggingFace 5 GB Model."
+@if exist "..\models\stable-diffusion\v1-5-pruned.ckpt" (
+    for %%I in ("..\models\stable-diffusion\v1-5-pruned.ckpt") do if "%%~zI" EQU "7703807346" (
+        echo "Data files (weights) necessary for Stable Diffusion V1.5 were already downloaded."
     ) else (
-        del "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt"
+        del "..\models\stable-diffusion\v1-5-pruned.ckpt"
+    )
+)
+
+@if not exist "..\models\stable-diffusion\v1-5-pruned.ckpt" (
+    @echo. & echo "Downloading data files (weights) for Stable Diffusion V1.5.." & echo.
+
+    @call curl -L -k https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.ckpt > ..\models\stable-diffusion\v1-5-pruned.ckpt
+
+    @if exist "..\models\stable-diffusion\v1-5-pruned.ckpt" (
+        for %%I in ("..\models\stable-diffusion\v1-5-pruned.ckpt") do if "%%~zI" NEQ "7703807346" (
+            echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
+            echo. & echo "Error downloading the data files (weights) for Stable Diffusion V1.5. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+            pause
+            exit /b
+        )
+    ) else (
+        @echo. & echo "Error downloading the data files (weights) for Stable Diffusion V1.5. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+        pause
+        exit /b
+    )
+)
+
+@rem Stable Diffusion 2.1 - NON EMA - PRUNED
+
+@if exist "..\models\stable-diffusion\v2-1_768-pruned.ckpt" (
+    for %%I in ("..\models\stable-diffusion\v2-1_768-pruned.ckpt") do if "%%~zI" EQU "5214864585" (
+        echo "Data files (weights) necessary for Stable Diffusion V2.1 were already downloaded."
+    ) else (
+        del "..\models\stable-diffusion\v2-1_768-pruned.ckpt"
     )
 )
 
 @if not exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
     @echo. & echo "Downloading data files (weights) for Stable Diffusion.." & echo.
 
-    @call curl -L -k https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt > ..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt
+    @call curl -L -k https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-nonema-pruned.ckpt > ..\models\stable-diffusion\v2-1_768-pruned.ckpt
 
-    @if exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
-        for %%I in ("..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt") do if "%%~zI" NEQ "5214865159" (
+    @if exist "..\models\stable-diffusion\v2-1_768-pruned.ckpt" (
+        for %%I in ("..\models\stable-diffusion\v2-1_768-pruned.ckpt") do if "%%~zI" NEQ "5214864585" (
             echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
-            echo. & echo "Error downloading the data files (weights) for Stable Diffusion. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+            echo. & echo "Error downloading the data files (weights) for Stable Diffusion V2.1. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
             pause
             exit /b
         )
     ) else (
-        @echo. & echo "Error downloading the data files (weights) for Stable Diffusion. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+        @echo. & echo "Error downloading the data files (weights) for Stable Diffusion V2.1. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
         pause
         exit /b
     )
 )
 
+@rem Open Journey 1.5 
 
+@if exist "..\models\stable-diffusion\openjourney-v1-5.ckpt" (
+    for %%I in ("..\models\stable-diffusion\openjourney-v1-5.ckpt") do if "%%~zI" EQU "2132856622" (
+        echo "Data files (weights) necessary for OpenJourney V1.5 were already downloaded."
+    ) else (
+        del "..\models\stable-diffusion\openjourney-v1-5.ckpt"
+    )
+)
+
+@if not exist "..\models\stable-diffusion\openjourney-v1-5.ckpt" (
+    @echo. & echo "Downloading data files (weights) for Open Journey V1.5.." & echo.
+
+    @call curl -L -k https://huggingface.co/prompthero/openjourney/resolve/main/mdjrny-v4.ckpt > ..\models\stable-diffusion\openjourney-v1-5.ckpt
+
+    @if exist "..\models\stable-diffusion\openjourney-v1-5.ckpt" (
+        for %%I in ("..\models\stable-diffusion\openjourney-v1-5.ckpt") do if "%%~zI" NEQ "2132856622" (
+            echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
+            echo. & echo "Error downloading the data files (weights) for Open Journey V1.5. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+            pause
+            exit /b
+        )
+    ) else (
+        @echo. & echo "Error downloading the data files (weights) for Open Journey V1.5. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+        pause
+        exit /b
+    )
+)
+
+@rem Open Journey 2.0
+
+@if exist "..\models\stable-diffusion\openjourney-v2-0.ckpt" (
+    for %%I in ("..\models\stable-diffusion\openjourney-v2-0.ckpt") do if "%%~zI" EQU " 2132887840" (
+        echo "Data files (weights) necessary for Open Journey V2.0 were already downloaded."
+    ) else (
+        del "..\models\stable-diffusion\openjourney-v2-0.ckpt"
+    )
+)
+
+@if not exist "..\models\stable-diffusion\openjourney-v2-0.ckpt" (
+    @echo. & echo "Downloading data files (weights) for Open Journey V2.0.." & echo.
+
+    @call curl -L -k https://huggingface.co/prompthero/openjourney-v2/resolve/main/openjourney-v2.ckpt > ..\models\stable-diffusion\openjourney-v2-0.ckpt
+
+    @if exist "..\models\stable-diffusion\openjourney-v2-0.ckpt" (
+        for %%I in ("..\models\stable-diffusion\openjourney-v2-0.ckpt") do if "%%~zI" NEQ " 2132887840" (
+            echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
+            echo. & echo "Error downloading the data files (weights) for Open Journey V2.0. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+            pause
+            exit /b
+        )
+    ) else (
+        @echo. & echo "Error downloading the data files (weights) for Open Journey V2.0. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
+        pause
+        exit /b
+    )
+)
+
+@rem GPFGAn v1.3
 @if exist "..\models\gfpgan\GFPGANv1.3.pth" (
     for %%I in ("..\models\gfpgan\GFPGANv1.3.pth") do if "%%~zI" EQU "348632874" (
         echo "Data files (weights) necessary for GFPGAN (Face Correction) were already downloaded"
