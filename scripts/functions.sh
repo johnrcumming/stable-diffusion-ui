@@ -37,3 +37,23 @@ filesize() {
 }
 
 
+download_model() {
+    # $1 URL
+    # $2 Target
+    # $3 size in bytes
+
+    if [ ! -f "$2" ]; then
+        echo "Downloading data files (weights) for Stable Diffusion.."
+
+        curl -L -k $1 > $2
+
+        if [ -f "$2" ]; then
+            model_size=`filesize "$2"`
+            if [ ! "$model_size" == "$3" ]; then
+            fail "The downloaded model file was invalid! Bytes downloaded: $model_size"
+            fi
+        else
+            fail "Error downloading the data files (weights) for Stable Diffusion"
+        fi
+    fi
+}
