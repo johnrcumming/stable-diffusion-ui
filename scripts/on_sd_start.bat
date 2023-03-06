@@ -201,20 +201,20 @@ call WHERE uvicorn > .tmp
 
 @rem Stable Diffusion 1.5 - NON EMA - PRUNED
 
-@if exist "..\models\stable-diffusion\v1-5-pruned.ckpt" (
-    for %%I in ("..\models\stable-diffusion\v1-5-pruned.ckpt") do if "%%~zI" EQU "7703807346" (
+@if exist "..\models\stable-diffusion\sd-v1-5-pruned.ckpt" (
+    for %%I in ("..\models\stable-diffusion\sd-v1-5-pruned.ckpt") do if "%%~zI" EQU "7703807346" ( 
         echo "Data files (weights) necessary for Stable Diffusion V1.5 were already downloaded."
     ) else (
-        del "..\models\stable-diffusion\v1-5-pruned.ckpt"
+        del "..\models\stable-diffusion\sd-v1-5-pruned.ckpt"
     )
 )
 
-@if not exist "..\models\stable-diffusion\v1-5-pruned.ckpt" (
+@if not exist "..\models\stable-diffusion\sd-v1-5-pruned.ckpt" (
     @echo. & echo "Downloading data files (weights) for Stable Diffusion V1.5.." & echo.
 
-    @call curl -L -k https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.ckpt > ..\models\stable-diffusion\v1-5-pruned.ckpt
+    @call curl -L -k https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned.ckpt > ..\models\stable-diffusion\sd-v1-5-pruned.ckpt
 
-    @if exist "..\models\stable-diffusion\v1-5-pruned.ckpt" (
+    @if exist "..\models\stable-diffusion\sd-v1-5-pruned.ckpt" (
         for %%I in ("..\models\stable-diffusion\v1-5-pruned.ckpt") do if "%%~zI" NEQ "7703807346" (
             echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
             echo. & echo "Error downloading the data files (weights) for Stable Diffusion V1.5. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
@@ -230,21 +230,21 @@ call WHERE uvicorn > .tmp
 
 @rem Stable Diffusion 2.1 - NON EMA - PRUNED
 
-@if exist "..\models\stable-diffusion\v2-1_768-pruned.ckpt" (
-    for %%I in ("..\models\stable-diffusion\v2-1_768-pruned.ckpt") do if "%%~zI" EQU "5214864585" (
+@if exist "..\models\stable-diffusion\sd-v2-1_768-pruned.ckpt" (
+    for %%I in ("..\models\stable-diffusion\sd-v2-1_768-pruned.ckpt") do if "%%~zI" EQU "5214864585" (
         echo "Data files (weights) necessary for Stable Diffusion V2.1 were already downloaded."
     ) else (
-        del "..\models\stable-diffusion\v2-1_768-pruned.ckpt"
+        del "..\models\stable-diffusion\sd-v2-1_768-pruned.ckpt"
     )
 )
 
-@if not exist "..\models\stable-diffusion\v2-1_768-ema-pruned.ckpt" (
+@if not exist "..\models\stable-diffusion\sd-v2-1_768-ema-pruned.ckpt" (
     @echo. & echo "Downloading data files (weights) for Stable Diffusion.." & echo.
 
-    @call curl -L -k https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-nonema-pruned.ckpt > ..\models\stable-diffusion\v2-1_768-pruned.ckpt
+    @call curl -L -k https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-nonema-pruned.ckpt > ..\models\stable-diffusion\sd-v2-1_768-pruned.ckpt
 
-    @if exist "..\models\stable-diffusion\v2-1_768-pruned.ckpt" (
-        for %%I in ("..\models\stable-diffusion\v2-1_768-pruned.ckpt") do if "%%~zI" NEQ "5214864585" (
+    @if exist "..\models\stable-diffusion\sd-v2-1_768-pruned.ckpt" (
+        for %%I in ("..\models\stable-diffusion\sd-v2-1_768-pruned.ckpt") do if "%%~zI" NEQ "5214864585" (
             echo. & echo "Error: The downloaded model file was invalid! Bytes downloaded: %%~zI" & echo.
             echo. & echo "Error downloading the data files (weights) for Stable Diffusion V2.1. Sorry about that, please try to:" & echo "  1. Run this installer again." & echo "  2. If that doesn't fix it, please try the common troubleshooting steps at https://github.com/cmdr2/stable-diffusion-ui/wiki/Troubleshooting" & echo "  3. If those steps don't help, please copy *all* the error messages in this window, and ask the community at https://discord.com/invite/u9yhsFmEkB" & echo "  4. If that doesn't solve the problem, please file an issue at https://github.com/cmdr2/stable-diffusion-ui/issues" & echo "Thanks!" & echo.
             pause
