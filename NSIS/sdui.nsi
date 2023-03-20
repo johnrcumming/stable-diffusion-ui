@@ -2,7 +2,7 @@
 
 Target amd64-unicode
 Unicode True
-SetCompressor /SOLID /FINAL lzma
+SetCompressor /FINAL lzma
 RequestExecutionLevel user
 !AddPluginDir /amd64-unicode "."
 ; HM NIS Edit Wizard helper defines
@@ -16,6 +16,8 @@ RequestExecutionLevel user
 !include "MUI.nsh"
 !include "LogicLib.nsh"
 !include "nsDialogs.nsh"
+
+!include "nsisconf.nsh"
 
 Var Dialog
 Var Label
@@ -142,7 +144,7 @@ Function MediaPackDialog
 	Abort
     ${EndIf}
 
-    ${NSD_CreateLabel} 0 0 100% 48u "The Windows Media Feature Pack is missing on this computer. It is required for the Stable Diffusion UI.$\nYou can continue the installation after installing the Windows Media Feature Pack."
+    ${NSD_CreateLabel} 0 0 100% 48u "The Windows Media Feature Pack is missing on this computer. It is required for Easy Diffusion.$\nYou can continue the installation after installing the Windows Media Feature Pack."
     Pop $Label
  	
     ${NSD_CreateButton} 10% 49u 80% 12u "Download Meda Feature Pack from Microsoft"
@@ -155,16 +157,20 @@ Function MediaPackDialog
     nsDialogs::Show
 FunctionEnd
 
+Function FinishPageAction
+CreateShortCut "$DESKTOP\Easy Diffusion.lnk" "$INSTDIR\Start Stable Diffusion UI.cmd" "" "$INSTDIR\installer_files\cyborg_flower_girl.ico"
+FunctionEnd
+
 ;---------------------------------------------------------------------------------------------------------
 ; MUI Settings
 ;---------------------------------------------------------------------------------------------------------
 !define MUI_ABORTWARNING
-!define MUI_ICON "sd.ico"
+!define MUI_ICON "cyborg_flower_girl.ico"
 
-!define MUI_WELCOMEFINISHPAGE_BITMAP "astro.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "cyborg_flower_girl.bmp"
 
 ; Welcome page
-!define MUI_WELCOMEPAGE_TEXT "This installer will guide you through the installation of Stable Diffusion UI.$\n$\n\
+!define MUI_WELCOMEPAGE_TEXT "This installer will guide you through the installation of Easy Diffusion.$\n$\n\
 Click Next to continue."
 !insertmacro MUI_PAGE_WELCOME
 Page custom MediaPackDialog
@@ -180,6 +186,11 @@ Page custom MediaPackDialog
 !insertmacro MUI_PAGE_INSTFILES 
 
 ; Finish page
+!define MUI_FINISHPAGE_SHOWREADME ""
+!define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "Create Desktop Shortcut"
+!define MUI_FINISHPAGE_SHOWREADME_FUNCTION FinishPageAction
+
 !define MUI_FINISHPAGE_RUN "$INSTDIR\Start Stable Diffusion UI.cmd"
 !insertmacro MUI_PAGE_FINISH
 
@@ -203,20 +214,22 @@ Section "MainSection" SEC01
   File "..\How to install and run.txt"
   File "..\LICENSE"
   File "..\scripts\Start Stable Diffusion UI.cmd"
-  File /r "D:\path\to\installed\folder\installer_files"
+  File /r "${EXISTING_INSTALLATION_DIR}\installer_files"
+  File /r "${EXISTING_INSTALLATION_DIR}\profile"
+  File /r "${EXISTING_INSTALLATION_DIR}\sd-ui-files"
+  SetOutPath "$INSTDIR\installer_files"
+  File "cyborg_flower_girl.ico"
   SetOutPath "$INSTDIR\scripts"
-  File "..\scripts\bootstrap.bat"
-  File "..\scripts\install_status.txt"
+  File "${EXISTING_INSTALLATION_DIR}\scripts\install_status.txt"
   File "..\scripts\on_env_start.bat"
   File "C:\windows\system32\curl.exe"
-  CreateDirectory "$INSTDIR\profile"
   CreateDirectory "$INSTDIR\models"
   CreateDirectory "$INSTDIR\models\stable-diffusion"
   CreateDirectory "$INSTDIR\models\gfpgan"
   CreateDirectory "$INSTDIR\models\realesrgan"
   CreateDirectory "$INSTDIR\models\vae"
   CreateDirectory "$SMPROGRAMS\Easy Diffusion"
-  CreateShortCut "$SMPROGRAMS\Easy Diffusion\Easy Diffusion.lnk" "$INSTDIR\Start Stable Diffusion UI.cmd"
+  CreateShortCut "$SMPROGRAMS\Easy Diffusion\Easy Diffusion.lnk" "$INSTDIR\Start Stable Diffusion UI.cmd" "" "$INSTDIR\installer_files\cyborg_flower_girl.ico"
 
   DetailPrint 'Downloading the Stable Diffusion 1.4 model...'
   NScurl::http get "https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt" "$INSTDIR\models\stable-diffusion\sd-v1-4.ckpt" /CANCEL /INSIST /END
@@ -232,7 +245,10 @@ Section "MainSection" SEC01
 
   DetailPrint 'Downloading the default VAE (sd-vae-ft-mse-original) model...'
   NScurl::http get "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.ckpt" "$INSTDIR\models\vae\vae-ft-mse-840000-ema-pruned.ckpt" /CANCEL /INSIST /END
-  
+
+  DetailPrint 'Downloading the CLIP model (clip-vit-large-patch14)...'
+  NScurl::http get "https://huggingface.co/openai/clip-vit-large-patch14/resolve/8d052a0f05efbaefbc9e8786ba291cfdf93e5bff/pytorch_model.bin" "$INSTDIR\profile\.cache\huggingface\hub\models--openai--clip-vit-large-patch14\snapshots\8d052a0f05efbaefbc9e8786ba291cfdf93e5bff\pytorch_model.bin" /CANCEL /INSIST /END
+
 SectionEnd
 
 ;---------------------------------------------------------------------------------------------------------
@@ -278,7 +294,7 @@ Function .onInit
 
    ${If} $4 < "8000"
       MessageBox MB_OK|MB_ICONEXCLAMATION "Warning!$\n$\nYour system has less than 8GB of memory (RAM).$\n$\n\
-You can still try to install Stable Diffusion UI,$\nbut it might have problems to start, or run$\nvery slowly."
+You can still try to install Easy Diffusion,$\nbut it might have problems to start, or run$\nvery slowly."
    ${EndIf}
   
 FunctionEnd
